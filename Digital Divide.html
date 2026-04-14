@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Divide — Keynote 3.0</title>
+<style>
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+:root {
+  --font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --blue:    #0A84FF;
+  --indigo:  #5E5CE6;
+  --purple:  #BF5AF2;
+  --pink:    #FF375F;
+  --orange:  #FF9F0A;
+  --yellow:  #FFD60A;
+  --green:   #30D158;
+  --teal:    #5AC8FA;
+  --red:     #FF453A;
+  --white:   #FFFFFF;
+  --ink:     #1C1C1E;
+  --ink2:    #3A3A3C;
+  --ink3:    #636366;
+  --ink4:    #AEAEB2;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+  background: #fff;
+}
+
+/* ============================================================
+   DECK
+   ============================================================ */
+#deck {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  isolation: isolate;   /* NEW: stops bleed between slides */
+}
+
+/* ============================================================
+   SLIDE BASE
+   ============================================================ */
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5vw 7vw;
+  /* HIDDEN by default — opacity AND visibility */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, opacity;
+}
+.slide.split {
+  flex-direction: row !important;
+  padding: 0 !important;
+  align-items: stretch !important;
+}
+/* ACTIVE: visible, animations run */
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+  z-index: 2;
+}
+/* Slide enter animations */
+.slide.enter-r { animation: slideInR 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+.slide.enter-l { animation: slideInL 0.55s cubic-bezier(0.16,1,0.3,1) both; }
+
+@keyframes slideInR {
+  from { opacity:0; transform:translateX(70px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+@keyframes slideInL {
+  from { opacity:0; transform:translateX(-70px); }
+  to   { opacity:1; transform:translateX(0); }
+}
+
+/* ============================================================
+   ELEMENT ANIMATIONS — only fire when parent is .active
+   ============================================================ */
+.a       { opacity:0; transform:translateY(48px); }
+.a-up    { opacity:0; transform:translateY(-48px); }
+.a-l     { opacity:0; transform:translateX(-55px); }
+.a-r     { opacity:0; transform:translateX(55px); }
+.a-s     { opacity:0; transform:scale(0.68); }
+.a-fade  { opacity:0; }
+.a-pop   { opacity:0; transform:scale(1.3); }
+
+.slide.active .a     { animation: animUp    0.8s cubic-bezier(0.16,1,0.3,1) both; }
+.slide.active .a-up  { animation: animDown  0.8s cubic-bezier(0.16,1,0.3,1) both; }
+.slide.active .a-l   { animation: animLeft  0.8s cubic-bezier(0.16,1,0.3,1) both; }
+.slide.active .a-r   { animation: animRight 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+.slide.active .a-s   { animation: animScale 0.8s cubic-bezier(0.16,1,0.3,1) both; }
+.slide.active .a-fade{ animation: animFade  0.9s ease both; }
+.slide.active .a-pop { animation: animPop   0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+@keyframes animUp    { to { opacity:1; transform:translateY(0); } }
+@keyframes animDown  { to { opacity:1; transform:translateY(0); } }
+@keyframes animLeft  { to { opacity:1; transform:translateX(0); } }
+@keyframes animRight { to { opacity:1; transform:translateX(0); } }
+@keyframes animScale { to { opacity:1; transform:scale(1); } }
+@keyframes animFade  { to { opacity:1; } }
+@keyframes animPop   { to { opacity:1; transform:scale(1); } }
+
+/* Delay ladder */
+.d0{animation-delay:0.05s!important} .d1{animation-delay:0.18s!important}
+.d2{animation-delay:0.32s!important} .d3{animation-delay:0.46s!important}
+.d4{animation-delay:0.60s!important} .d5{animation-delay:0.74s!important}
+.d6{animation-delay:0.88s!important} .d7{animation-delay:1.02s!important}
+
+/* ============================================================
+   PER-SLIDE BACKGROUNDS  — each slide is its own world
+   ============================================================ */
+
+/* S1 — cover: deep cosmic gradient */
+#s1  { background: linear-gradient(145deg,#0F0C29,#302B63,#24243E); }
+
+/* S2 — hook: electric blue-teal */
+#s2  { background: linear-gradient(135deg,#0052D4,#4364F7,#6FB1FC); }
+
+/* S3 — data bomb: dramatic dark with neon */
+#s3  { background: linear-gradient(160deg,#0D0D0D 0%,#1A0533 60%,#0D0D0D 100%); }
+
+/* S4 — definition: warm cream light */
+#s4  { background: linear-gradient(135deg,#F8F6F0 0%,#EEE8D5 100%); }
+
+/* S5 — chart: deep navy */
+#s5  { background: linear-gradient(160deg,#0A0E27 0%,#0D1B5E 100%); }
+
+/* S6 — dimensions: soft lavender */
+#s6  { background: linear-gradient(135deg,#E8E0F8 0%,#D4CBF0 100%); }
+
+/* S7 — causes: sunset orange-red */
+#s7  { background: linear-gradient(145deg,#1A0505,#3D1515,#1A0505); }
+
+/* S8 — literacy: rich teal-dark */
+#s8  { background: linear-gradient(135deg,#003D4C,#00687A,#003D4C); }
+
+/* S9 — structural: gunmetal modern */
+#s9  { background: linear-gradient(145deg,#141E30,#243B55); }
+
+/* S10 — elderly: warm amber-dark */
+#s10 { background: linear-gradient(145deg,#1C0A00,#3D1C00,#1C0A00); }
+
+/* S11 — education: deep indigo */
+#s11 { background: linear-gradient(145deg,#0D0221,#1A0547,#0D0221); }
+
+/* S12 — cycle: dramatic red-black */
+#s12 { background: linear-gradient(145deg,#1A0000,#3D0000,#1A0000); }
+
+/* S13 — bridge: optimistic fresh green */
+#s13 { background: linear-gradient(135deg,#004D40,#00897B,#004D40); }
+
+/* S14 — gov: official deep blue */
+#s14 { background: linear-gradient(135deg,#001A3A 0%,#003580 100%); }
+
+/* S15 — tech: vibrant electric purple */
+#s15 { background: linear-gradient(135deg,#1A0040 0%,#4A0080 100%); }
+
+/* S16 — community: lush forest green */
+#s16 { background: linear-gradient(135deg,#002D1A 0%,#005C35 100%); }
+
+/* S17 — vision: spectacular prismatic */
+#s17 { background: linear-gradient(125deg,#0F0C29,#302B63,#7B2FBE,#C9184A,#FF9F0A); }
+
+/* S18 — ending: pure clean white */
+#s18 { background: linear-gradient(135deg,#FFFFFF 0%,#F0F4FF 100%); }
+
+/* ============================================================
+   BACKGROUND DECORATIONS (noise / grid / glow)
+   ============================================================ */
+.bg-dots {
+  position:absolute; inset:0; pointer-events:none;
+  background-image: radial-gradient(rgba(255,255,255,.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.bg-grid {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.glow-orb {
+  position:absolute; border-radius:50%;
+  filter: blur(80px); pointer-events:none; opacity:.5;
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+.t-display {
+  font-size: clamp(4rem,10vw,9.5rem);
+  font-weight:800; letter-spacing:-0.05em; line-height:1;
+  color:#fff;
+}
+.t-h1 {
+  font-size: clamp(2.2rem,5vw,5rem);
+  font-weight:700; letter-spacing:-0.04em;
+  line-height:1.1; text-align:center; color:#fff;
+}
+.t-h2 {
+  font-size: clamp(1.6rem,3.2vw,3.2rem);
+  font-weight:600; letter-spacing:-0.03em;
+  line-height:1.2; text-align:center; color:#fff;
+}
+.t-h3 {
+  font-size: clamp(1.1rem,2vw,1.9rem);
+  font-weight:600; line-height:1.25; color:#fff;
+}
+.t-body {
+  font-size: clamp(0.9rem,1.6vw,1.55rem);
+  line-height:1.6; text-align:center; max-width:880px;
+}
+.t-label {
+  font-size: clamp(0.65rem,1vw,0.85rem);
+  font-weight:600; letter-spacing:0.14em;
+  text-transform:uppercase;
+}
+/* text on light bg */
+.on-light .t-h1,
+.on-light .t-h2,
+.on-light .t-h3   { color: var(--ink); }
+.on-light .t-body { color: var(--ink3); }
+.on-light .t-label{ color: var(--ink4); }
+
+/* text on dark bg */
+.t-dim   { color: rgba(255,255,255,.45); }
+.t-muted { color: rgba(255,255,255,.28); }
+
+/* Gradient text */
+.grad-cool {
+  background: linear-gradient(90deg,var(--teal),var(--blue));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.grad-warm {
+  background: linear-gradient(90deg,var(--yellow),var(--orange),var(--pink));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.grad-purple {
+  background: linear-gradient(90deg,var(--blue),var(--purple),var(--pink));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.grad-neon {
+  background: linear-gradient(90deg,var(--green),var(--teal));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+
+/* ============================================================
+   LAYOUT UTILS
+   ============================================================ */
+.mt1{margin-top:.5rem} .mt2{margin-top:1.2rem}
+.mt3{margin-top:2rem}  .mt4{margin-top:3rem}
+.w100{width:100%} .mw900{max-width:900px} .mw1100{max-width:1100px}
+.t-left{text-align:left!important}
+
+/* Divider */
+.divider {
+  width:48px; height:3px; border-radius:2px;
+  margin:1rem auto;
+}
+.div-blue  { background:linear-gradient(90deg,var(--blue),var(--teal)); }
+.div-warm  { background:linear-gradient(90deg,var(--orange),var(--pink)); }
+.div-green { background:linear-gradient(90deg,var(--green),var(--teal)); }
+.div-purple{ background:linear-gradient(90deg,var(--purple),var(--pink)); }
+.div-dark  { background:linear-gradient(90deg,var(--ink2),var(--ink3)); }
+
+/* ============================================================
+   GLASS CARD
+   ============================================================ */
+.glass {
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:24px; padding:2.2rem 1.8rem;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  transition:transform .3s ease, box-shadow .3s ease;
+}
+.glass:hover {
+  transform:translateY(-6px);
+  box-shadow:0 24px 60px rgba(0,0,0,.35);
+}
+.glass-light {
+  background:rgba(255,255,255,.7);
+  border:1px solid rgba(0,0,0,.07);
+  border-radius:24px; padding:2.2rem 1.8rem;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  transition:transform .3s ease, box-shadow .3s ease;
+  color: var(--ink);
+}
+.glass-light:hover {
+  transform:translateY(-6px);
+  box-shadow:0 24px 60px rgba(0,0,0,.12);
+}
+
+/* ============================================================
+   GRID
+   ============================================================ */
+.grid3 {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1.6rem; width:100%; max-width:1100px; margin-top:2rem;
+}
+@media(max-width:700px){.grid3{grid-template-columns:1fr;}}
+
+/* ============================================================
+   BADGE / PILL
+   ============================================================ */
+.badge {
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.5rem 1.2rem; border-radius:50px;
+  font-size:clamp(.7rem,1.1vw,.95rem);
+  font-weight:600; letter-spacing:.04em;
+}
+.badge-blue   { background:rgba(10,132,255,.2); color:var(--teal); border:1px solid rgba(10,132,255,.35); }
+.badge-orange { background:rgba(255,159,10,.2); color:var(--orange); border:1px solid rgba(255,159,10,.35); }
+.badge-red    { background:rgba(255,69,58,.2);  color:#ff6961; border:1px solid rgba(255,69,58,.35); }
+.badge-green  { background:rgba(48,209,88,.2);  color:var(--green); border:1px solid rgba(48,209,88,.35); }
+.badge-purple { background:rgba(191,90,242,.2); color:var(--purple); border:1px solid rgba(191,90,242,.35); }
+
+/* ============================================================
+   NUMBER LIST
+   ============================================================ */
+.numlist { display:flex; flex-direction:column; gap:2rem;
+           max-width:900px; margin-top:1.8rem; width:100%; }
+.numitem { display:flex; gap:2rem; align-items:flex-start; }
+.nnum {
+  font-size:clamp(2.5rem,4.5vw,4rem);
+  font-weight:800; line-height:1; flex-shrink:0;
+  background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.4) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ============================================================
+   CYCLE DIAGRAM
+   ============================================================ */
+.cycle {
+  display:flex; align-items:center; justify-content:center;
+  gap:.8rem; flex-wrap:wrap; margin-top:2.5rem;
+}
+.cn {
+  font-size:clamp(.9rem,1.6vw,1.4rem);
+  font-weight:600; padding:.8rem 1.8rem;
+  border:2px solid rgba(255,255,255,.2); border-radius:50px;
+  color:rgba(255,255,255,.7);
+  transition:all .3s;
+}
+.cn.hl {
+  border-color:var(--red); color:#fff;
+  background:rgba(255,69,58,.15);
+  box-shadow:0 0 30px rgba(255,69,58,.3);
+  animation:redPulse 2.5s ease-in-out infinite;
+}
+@keyframes redPulse {
+  0%,100%{box-shadow:0 0 20px rgba(255,69,58,.3);}
+  50%    {box-shadow:0 0 50px rgba(255,69,58,.6);}
+}
+.ca { font-size:1.4rem; color:rgba(255,255,255,.3);
+      animation:arrowBob 1.6s ease-in-out infinite; }
+@keyframes arrowBob {
+  0%,100%{transform:translateX(0);}
+  50%    {transform:translateX(6px);}
+}
+
+/* ============================================================
+   CAPSULE ROW
+   ============================================================ */
+.caps { display:flex; gap:.8rem; flex-wrap:wrap; justify-content:center; margin-top:2rem; }
+.cap {
+  font-size:clamp(.8rem,1.3vw,1.2rem);
+  font-weight:600; padding:.7rem 1.6rem;
+  border:1.5px solid rgba(255,255,255,.2); border-radius:50px;
+  color:rgba(255,255,255,.6); transition:all .3s;
+}
+.cap:hover{border-color:rgba(255,255,255,.6);color:#fff;}
+.cap-arr{font-size:1.2rem;color:rgba(255,255,255,.25);align-self:center;}
+
+/* ============================================================
+   SPLIT HALF
+   ============================================================ */
+.half {
+  flex:1; height:100%;
+  display:flex; flex-direction:column;
+  justify-content:center; padding:5vw;
+  position:relative; overflow:hidden;
+}
+
+/* ============================================================
+   BAR CHART
+   ============================================================ */
+.bar-wrap {
+  display:flex; align-items:flex-end; gap:.6rem;
+  height:190px; width:100%; max-width:1000px;
+  padding:0 .5rem; margin-top:1.5rem;
+}
+.bar-grp { display:flex;flex-direction:column;align-items:center;gap:.3rem;flex:1; }
+.bar-pair { display:flex;gap:4px;align-items:flex-end;height:170px; }
+.bar {
+  width:clamp(14px,2vw,26px);
+  border-radius:4px 4px 0 0;
+  opacity:0; transform:scaleY(0); transform-origin:bottom;
+}
+.bar.u { background:linear-gradient(to top,#0A5FCC,#5AC8FA); }
+.bar.r { background:linear-gradient(to top,#B85A00,#FF9F0A); }
+.slide.active .bar { animation:growBar .75s cubic-bezier(.16,1,.3,1) both; }
+@keyframes growBar { to{opacity:1;transform:scaleY(1);} }
+.bar-lbl{font-size:.72rem;color:rgba(255,255,255,.4);}
+.legend { display:flex;gap:1.5rem;margin-top:.8rem;justify-content:center; }
+.ld { display:flex;align-items:center;gap:5px;
+      font-size:.8rem;color:rgba(255,255,255,.5); }
+.ldd { width:8px;height:8px;border-radius:2px; }
+
+/* ============================================================
+   PARTICLES
+   ============================================================ */
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.ptc {
+  position:absolute; bottom:-4px;
+  border-radius:50%;
+  animation:rise linear infinite;
+}
+@keyframes rise{
+  0%  {transform:translateY(0) translateX(0); opacity:0;}
+  8%  {opacity:1;}
+  92% {opacity:.6;}
+  100%{transform:translateY(-106vh) translateX(20px);opacity:0;}
+}
+
+/* ============================================================
+   STAT BADGE (cover)
+   ============================================================ */
+.live-badge {
+  display:inline-flex; align-items:center; gap:.6rem;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:50px; padding:.55rem 1.3rem;
+  font-size:clamp(.7rem,1.1vw,.9rem);
+  color:rgba(255,255,255,.55);
+}
+.live-dot {
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);
+  animation:livePulse 1.5s ease-in-out infinite;
+}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(1.6);}}
+
+/* ============================================================
+   SPEAKER NOTE
+   ============================================================ */
+#snote {
+  position:fixed; bottom:44px; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,.8); border:1px solid rgba(255,255,255,.1);
+  border-radius:10px; padding:.55rem 1.2rem;
+  font-size:.75rem; color:rgba(255,255,255,.45);
+  max-width:580px; text-align:center;
+  z-index:9999; pointer-events:none;
+  transition:opacity .3s;
+}
+#snote.off{opacity:0;}
+
+/* ============================================================
+   CHROME
+   ============================================================ */
+#pbar {
+  position:fixed; top:0; left:0; height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--purple),var(--pink));
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+  z-index:9999;
+  box-shadow:0 0 10px rgba(10,132,255,.5);
+}
+#ndots {
+  position:fixed; right:16px; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:7px; z-index:9999;
+}
+.ndot {
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.25);
+  border:none;cursor:pointer;padding:0;
+  transition:all .3s;
+}
+.ndot.on{background:#fff;transform:scale(1.7);}
+#ctr {
+  position:fixed; bottom:16px; left:24px;
+  font-size:.7rem; color:rgba(255,255,255,.22);
+  font-variant-numeric:tabular-nums; z-index:9999;
+  font-family:var(--font);
+}
+#hint {
+  position:fixed; bottom:16px; right:50px;
+  font-size:.68rem; color:rgba(255,255,255,.18);
+  z-index:9999; font-family:var(--font);
+}
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+<!-- ═══════════════════════════════════════════════════════
+     S01  COVER — deep cosmic
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s1"
+  data-title="Digital Divide"
+  data-note="Welcome. Let the particles settle before speaking.">
+
+  <div class="bg-dots"></div>
+
+  <!-- Glow orbs -->
+  <div class="glow-orb" style="width:500px;height:500px;
+       background:radial-gradient(#302B63,transparent);
+       top:-100px;left:-100px;opacity:.6;"></div>
+  <div class="glow-orb" style="width:400px;height:400px;
+       background:radial-gradient(#5E5CE6,transparent);
+       bottom:-80px;right:-80px;opacity:.5;"></div>
+
+  <div class="particles">
+    <div class="ptc" style="left:6%;width:3px;height:3px;background:rgba(94,92,230,.8);animation-duration:14s;animation-delay:0s;"></div>
+    <div class="ptc" style="left:18%;width:2px;height:2px;background:rgba(90,200,250,.6);animation-duration:19s;animation-delay:2s;"></div>
+    <div class="ptc" style="left:33%;width:3px;height:3px;background:rgba(191,90,242,.7);animation-duration:12s;animation-delay:1s;"></div>
+    <div class="ptc" style="left:52%;width:2px;height:2px;background:rgba(255,255,255,.5);animation-duration:16s;animation-delay:3s;"></div>
+    <div class="ptc" style="left:68%;width:3px;height:3px;background:rgba(10,132,255,.8);animation-duration:13s;animation-delay:.5s;"></div>
+    <div class="ptc" style="left:81%;width:2px;height:2px;background:rgba(48,209,88,.6);animation-duration:20s;animation-delay:4s;"></div>
+    <div class="ptc" style="left:44%;width:2px;height:2px;background:rgba(255,159,10,.6);animation-duration:11s;animation-delay:1.5s;"></div>
+    <div class="ptc" style="left:92%;width:3px;height:3px;background:rgba(255,55,95,.7);animation-duration:17s;animation-delay:2.5s;"></div>
+  </div>
+
+  <div class="a d0" style="position:relative;z-index:1;
+       font-size:clamp(3.5rem,9vw,8.5rem);
+       font-weight:800;letter-spacing:-.05em;
+       background:linear-gradient(135deg,#FFFFFF 0%,#A8EDFF 40%,#C084FC 70%,#F9A8D4 100%);
+       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+    Digital Divide.
+  </div>
+
+  <div class="divider div-blue a d1" style="position:relative;z-index:1;"></div>
+
+  <div class="a d2 t-body" style="color:rgba(255,255,255,.5);position:relative;z-index:1;">
+    Unit 3 · Group Presentation
+  </div>
+
+  <div class="a d4 live-badge" style="position:relative;z-index:1;margin-top:3rem;">
+    <span class="live-dot"></span>
+    2.6 Billion people offline · 2026
+  </div>
+
+  <div class="a-fade d6 t-muted" style="position:relative;z-index:1;
+       font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;margin-top:4rem;">
+    ↓ scroll · arrow keys · swipe
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S02  HOOK — electric blue
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s2"
+  data-title="The Question"
+  data-note="Pause after the question. 3 full seconds of silence.">
+
+  <div class="bg-grid"></div>
+  <div class="glow-orb" style="width:600px;height:600px;
+       background:radial-gradient(rgba(255,255,255,.15),transparent);
+       top:50%;left:50%;transform:translate(-50%,-50%);opacity:.4;"></div>
+
+  <div class="a-fade d0 t-label" style="color:rgba(255,255,255,.4);position:relative;z-index:1;">
+    A question to open with
+  </div>
+  <div class="a d1 t-h1" style="font-size:clamp(2rem,5vw,5rem);
+       max-width:900px;margin-top:1.5rem;position:relative;z-index:1;">
+    In a connected world,<br>
+    <span style="background:linear-gradient(90deg,#fff,rgba(255,255,255,.7));
+          -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+          background-clip:text;">who is left behind?</span>
+  </div>
+
+  <!-- Large question mark illustration -->
+  <div class="a-s d3" style="position:relative;z-index:1;margin-top:2rem;">
+    <svg viewBox="0 0 120 160" width="80" height="107" xmlns="http://www.w3.org/2000/svg">
+      <text x="60" y="130" text-anchor="middle"
+            font-size="140" font-weight="800"
+            fill="rgba(255,255,255,.06)" font-family="sans-serif">?</text>
+      <text x="60" y="128" text-anchor="middle"
+            font-size="135" font-weight="800"
+            fill="none" stroke="rgba(255,255,255,.12)"
+            stroke-width="1" font-family="sans-serif">?</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S03  DATA BOMB — dark neon
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s3"
+  data-title="2.6 Billion"
+  data-note="Let the number count up. Pause. Then speak.">
+
+  <!-- Neon ring decoration -->
+  <div style="position:absolute;width:600px;height:600px;
+       border:1px solid rgba(191,90,242,.15);border-radius:50%;
+       top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;"></div>
+  <div style="position:absolute;width:420px;height:420px;
+       border:1px solid rgba(10,132,255,.2);border-radius:50%;
+       top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;"></div>
+
+  <div class="a-s d0" style="position:relative;z-index:1;text-align:center;">
+    <span id="bigNum"
+      style="font-size:clamp(5.5rem,14vw,12rem);
+             font-weight:800;letter-spacing:-.05em;
+             background:linear-gradient(135deg,#fff 0%,#BF5AF2 50%,#0A84FF 100%);
+             -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+             background-clip:text;line-height:1;">0</span>
+    <span style="font-size:clamp(2rem,5vw,5rem);
+           font-weight:700;letter-spacing:-.04em;color:rgba(255,255,255,.5);">
+      &nbsp;Billion
+    </span>
+  </div>
+
+  <div class="a d1 t-h2 mt2" style="position:relative;z-index:1;color:#fff;">
+    people remain offline globally.
+  </div>
+  <div class="a d2 t-body mt2" style="position:relative;z-index:1;color:rgba(255,255,255,.5);">
+    That's <strong style="color:#fff;">1 in 3 humans</strong>
+    completely excluded from the digital age.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S04  DEFINITION — warm light (light slide!)
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide on-light" id="s4"
+  data-title="Definition"
+  data-note="Emphasise the word MEANINGFUL — it is the key.">
+
+  <!-- Warm blob decorations -->
+  <div style="position:absolute;width:350px;height:350px;
+       background:radial-gradient(rgba(255,159,10,.15),transparent);
+       border-radius:50%;top:-80px;right:-80px;pointer-events:none;"></div>
+  <div style="position:absolute;width:280px;height:280px;
+       background:radial-gradient(rgba(10,132,255,.1),transparent);
+       border-radius:50%;bottom:-60px;left:-60px;pointer-events:none;"></div>
+
+  <div class="a-up d0 t-label" style="color:var(--blue);position:relative;z-index:1;">
+    Definition
+  </div>
+  <div class="a d1 t-h1 mt1" style="position:relative;z-index:1;">
+    What is the Digital Divide?
+  </div>
+  <div class="divider div-dark a d2" style="position:relative;z-index:1;"></div>
+
+  <!-- Three icon pills side by side -->
+  <div class="a d2" style="display:flex;gap:1rem;flex-wrap:wrap;
+       justify-content:center;margin-top:1rem;position:relative;z-index:1;">
+    <div class="glass-light" style="padding:.8rem 1.5rem;border-radius:50px;
+         display:flex;align-items:center;gap:.5rem;font-weight:600;
+         font-size:clamp(.8rem,1.3vw,1.1rem);color:var(--blue);">
+      📡 Hardware
+    </div>
+    <div class="glass-light" style="padding:.8rem 1.5rem;border-radius:50px;
+         display:flex;align-items:center;gap:.5rem;font-weight:600;
+         font-size:clamp(.8rem,1.3vw,1.1rem);color:var(--orange);">
+      📶 Connectivity
+    </div>
+    <div class="glass-light" style="padding:.8rem 1.5rem;border-radius:50px;
+         display:flex;align-items:center;gap:.5rem;font-weight:600;
+         font-size:clamp(.8rem,1.3vw,1.1rem);color:var(--purple);">
+      🧠 Digital Skills
+    </div>
+  </div>
+
+  <div class="a d3 t-body mt2" style="position:relative;z-index:1;color:var(--ink3);">
+    The gap between those with
+    <strong style="color:var(--ink);">meaningful access</strong>
+    to digital technology and those without.
+    It is not just about owning a device —
+    it is about having the <strong style="color:var(--blue);">full package</strong>
+    to participate in the digital world.
+  </div>
+
+  <!-- Visual: two person comparison SVG -->
+  <div class="a-s d4" style="position:relative;z-index:1;margin-top:1.5rem;">
+    <svg viewBox="0 0 300 90" width="340" height="102"
+         xmlns="http://www.w3.org/2000/svg">
+      <!-- Connected person -->
+      <circle cx="60" cy="22" r="14" fill="#0A84FF" opacity=".9"/>
+      <rect x="40" y="38" width="38" height="32" fill="#0A84FF" opacity=".7" rx="8"/>
+      <!-- signal -->
+      <path d="M50 8 Q60 1 70 8" fill="none" stroke="#0A84FF" stroke-width="2.5" stroke-linecap="round" opacity=".8"/>
+      <path d="M44 4 Q60-4 76 4" fill="none" stroke="#0A84FF" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+      <text x="60" y="83" text-anchor="middle" font-size="9"
+            fill="#0A84FF" font-family="sans-serif" font-weight="600">Connected ✓</text>
+
+      <!-- VS -->
+      <text x="150" y="46" text-anchor="middle" font-size="14"
+            fill="#AEAEB2" font-family="sans-serif" font-weight="700">VS</text>
+
+      <!-- Disconnected person -->
+      <circle cx="240" cy="22" r="14" fill="#AEAEB2" opacity=".6"/>
+      <rect x="220" y="38" width="38" height="32" fill="#AEAEB2" opacity=".4" rx="8"/>
+      <!-- broken signal -->
+      <path d="M230 8 Q240 1 250 8" fill="none" stroke="#AEAEB2" stroke-width="2.5" stroke-linecap="round" opacity=".3"/>
+      <line x1="226" y1="0" x2="254" y2="12" stroke="#FF453A" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="240" y="83" text-anchor="middle" font-size="9"
+            fill="#AEAEB2" font-family="sans-serif" font-weight="600">Left Behind ✗</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S05  BAR CHART — deep navy
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s5"
+  data-title="The Data"
+  data-note="Point to the gap between blue and orange. 30 points.">
+
+  <div class="bg-grid"></div>
+
+  <div class="a-up d0 t-label" style="color:var(--teal);position:relative;z-index:1;">
+    Data Visualization
+  </div>
+  <div class="a d1 t-h2 mt1" style="position:relative;z-index:1;">
+    Urban vs. Rural Internet Penetration
+  </div>
+  <div class="a d1 t-body" style="font-size:.95rem;color:rgba(255,255,255,.35);
+       position:relative;z-index:1;">
+    Global average · 2016 – 2026
+  </div>
+
+  <div class="a d2 bar-wrap mw1100 w100" style="position:relative;z-index:1;">
+    <div class="bar-grp">
+      <div class="bar-pair">
+        <div class="bar u" style="height:75%;animation-delay:.50s;"></div>
+        <div class="bar r" style="height:30%;animation-delay:.60s;"></div>
+      </div><div class="bar-lbl">2016</div>
+    </div>
+    <div class="bar-grp">
+      <div class="bar-pair">
+        <div class="bar u" style="height:82%;animation-delay:.70s;"></div>
+        <div class="bar r" style="height:38%;animation-delay:.80s;"></div>
+      </div><div class="bar-lbl">2018</div>
+    </div>
+    <div class="bar-grp">
+      <div class="bar-pair">
+        <div class="bar u" style="height:88%;animation-delay:.90s;"></div>
+        <div class="bar r" style="height:45%;animation-delay:1.00s;"></div>
+      </div><div class="bar-lbl">2020</div>
+    </div>
+    <div class="bar-grp">
+      <div class="bar-pair">
+        <div class="bar u" style="height:92%;animation-delay:1.10s;"></div>
+        <div class="bar r" style="height:52%;animation-delay:1.20s;"></div>
+      </div><div class="bar-lbl">2022</div>
+    </div>
+    <div class="bar-grp">
+      <div class="bar-pair">
+        <div class="bar u" style="height:95%;animation-delay:1.30s;"></div>
+        <div class="bar r" style="height:60%;animation-delay:1.40s;"></div>
+      </div><div class="bar-lbl">2024</div>
+    </div>
+    <div class="bar-grp">
+      <div class="bar-pair">
+        <div class="bar u" style="height:98%;animation-delay:1.50s;"></div>
+        <div class="bar r" style="height:68%;animation-delay:1.60s;"></div>
+      </div><div class="bar-lbl">2026</div>
+    </div>
+  </div>
+
+  <div class="legend a d3" style="position:relative;z-index:1;">
+    <div class="ld"><div class="ldd" style="background:#5AC8FA;"></div>Urban</div>
+    <div class="ld"><div class="ldd" style="background:#FF9F0A;"></div>Rural</div>
+  </div>
+  <div class="a d4" style="position:relative;z-index:1;
+       font-size:.85rem;color:rgba(255,255,255,.2);margin-top:.5rem;">
+    30-point gap persists — progress, but far from equal.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S06  DIMENSIONS — soft lavender (LIGHT)
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide on-light" id="s6"
+  data-title="Three Dimensions"
+  data-note="Cards appear one by one — gesture to each as it appears.">
+
+  <div class="a-up d0 t-label" style="color:var(--indigo);position:relative;z-index:1;">
+    Framework
+  </div>
+  <div class="a d1 t-h1 mt1" style="position:relative;z-index:1;">
+    Three Dimensions of the Divide
+  </div>
+
+  <div class="grid3 mw1100" style="position:relative;z-index:1;">
+    <div class="glass-light a d2">
+      <div style="font-size:2.2rem;margin-bottom:.8rem;">🌍</div>
+      <div class="t-h3" style="color:var(--indigo);">Regional</div>
+      <div class="t-body mt1" style="text-align:left;font-size:1.1rem;color:var(--ink3);">
+        Urban 5G coverage vs. villages with zero signal. Geography decides connectivity.
+      </div>
+    </div>
+    <div class="glass-light a d3">
+      <div style="font-size:2.2rem;margin-bottom:.8rem;">👥</div>
+      <div class="t-h3" style="color:var(--blue);">Demographic</div>
+      <div class="t-body mt1" style="text-align:left;font-size:1.1rem;color:var(--ink3);">
+        Digital natives vs. elderly users who were never taught the fundamentals.
+      </div>
+    </div>
+    <div class="glass-light a d4">
+      <div style="font-size:2.2rem;margin-bottom:.8rem;">💰</div>
+      <div class="t-h3" style="color:var(--orange);">Socioeconomic</div>
+      <div class="t-body mt1" style="text-align:left;font-size:1.1rem;color:var(--ink3);">
+        Families choosing between groceries and a monthly data plan.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S07  CAUSES — dark sunset
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s7"
+  data-title="Root Causes"
+  data-note="Stress 20% of monthly income — it shocks everyone.">
+
+  <div class="glow-orb" style="width:400px;height:400px;
+       background:radial-gradient(rgba(255,159,10,.2),transparent);
+       top:50%;left:20%;transform:translate(-50%,-50%);"></div>
+
+  <div class="a-up d0 t-label" style="color:var(--orange);position:relative;z-index:1;">
+    Root Causes
+  </div>
+  <div class="a d1 t-h1 mt1" style="position:relative;z-index:1;">
+    Why does the divide persist?
+  </div>
+
+  <div class="numlist w100" style="position:relative;z-index:1;">
+    <div class="numitem a d2">
+      <div class="nnum">01</div>
+      <div>
+        <div class="t-h3">Infrastructure Gap</div>
+        <div class="t-body mt1" style="text-align:left;font-size:1.2rem;color:rgba(255,255,255,.55);">
+          <strong style="color:#fff;">600 million people</strong> live in areas with
+          zero mobile network coverage. Telecoms won't invest where profit is impossible.
+        </div>
+      </div>
+    </div>
+    <div class="numitem a d3">
+      <div class="nnum">02</div>
+      <div>
+        <div class="t-h3">The Cost Barrier</div>
+        <div class="t-body mt1" style="text-align:left;font-size:1.2rem;color:rgba(255,255,255,.55);">
+          In the poorest nations, basic broadband costs over
+          <strong style="color:var(--orange);">20% of monthly income.</strong>
+          Devices remain luxury items — not tools.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S08  LITERACY — rich teal
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s8"
+  data-title="Digital Literacy"
+  data-note="The cognitive shift moment — long pause after line one.">
+
+  <div class="bg-dots" style="opacity:.3;"></div>
+  <div class="glow-orb" style="width:500px;height:500px;
+       background:radial-gradient(rgba(90,200,250,.15),transparent);
+       top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+  <div class="a d0 t-h2" style="color:rgba(255,255,255,.45);position:relative;z-index:1;">
+    It's not just about hardware.
+  </div>
+  <div class="a d2" style="position:relative;z-index:1;
+       font-size:clamp(2.5rem,5.5vw,5rem);
+       font-weight:800;letter-spacing:-.04em;margin-top:1rem;text-align:center;
+       background:linear-gradient(90deg,#5AC8FA,#30D158);
+       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+       background-clip:text;">
+    It's about Literacy.
+  </div>
+  <div class="divider div-green a d3" style="position:relative;z-index:1;"></div>
+  <div class="a d4 t-body mt1" style="position:relative;z-index:1;color:rgba(255,255,255,.55);">
+    Owning a device is useless without the ability to evaluate information,
+    navigate an OS, or protect your own data and privacy online.
+  </div>
+
+  <!-- Three skill icons -->
+  <div class="a d5" style="display:flex;gap:1.5rem;margin-top:2rem;
+       flex-wrap:wrap;justify-content:center;position:relative;z-index:1;">
+    <div class="badge badge-green">🔍 Evaluate Info</div>
+    <div class="badge badge-green">🔒 Stay Safe</div>
+    <div class="badge badge-green">🧭 Navigate Systems</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S09  STRUCTURAL — gunmetal
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s9"
+  data-title="Structural Exclusion"
+  data-note="Each capsule builds on the last — policy causes market failure causes exclusion.">
+
+  <div class="bg-grid"></div>
+
+  <div class="a-up d0 t-label" style="color:var(--red);position:relative;z-index:1;">
+    Layer 3
+  </div>
+  <div class="a d1 t-h1 mt1" style="position:relative;z-index:1;">Structural Exclusion</div>
+
+  <div class="caps a d2" style="position:relative;z-index:1;">
+    <div class="cap">Policy Neglect</div>
+    <div class="cap-arr">→</div>
+    <div class="cap">Market Failure</div>
+    <div class="cap-arr">→</div>
+    <div class="cap">Systemic Exclusion</div>
+  </div>
+
+  <div class="a d3 t-body mt3" style="position:relative;z-index:1;color:rgba(255,255,255,.5);">
+    When governments don't act, the market fills the void —
+    and the market only serves those who can pay.
+  </div>
+
+  <!-- Arrow chain SVG decoration -->
+  <div class="a-s d4" style="position:relative;z-index:1;margin-top:2rem;">
+    <svg viewBox="0 0 280 50" width="280" height="50" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40"  cy="25" r="20" fill="rgba(255,69,58,.15)"  stroke="rgba(255,69,58,.4)"  stroke-width="1.5"/>
+      <circle cx="140" cy="25" r="20" fill="rgba(255,159,10,.15)" stroke="rgba(255,159,10,.4)" stroke-width="1.5"/>
+      <circle cx="240" cy="25" r="20" fill="rgba(191,90,242,.15)" stroke="rgba(191,90,242,.4)" stroke-width="1.5"/>
+      <text x="40"  y="30" text-anchor="middle" font-size="18" fill="rgba(255,69,58,.7)"  font-family="sans-serif">⚖</text>
+      <text x="140" y="30" text-anchor="middle" font-size="18" fill="rgba(255,159,10,.7)" font-family="sans-serif">📉</text>
+      <text x="240" y="30" text-anchor="middle" font-size="18" fill="rgba(191,90,242,.7)" font-family="sans-serif">🚫</text>
+      <line x1="62"  y1="25" x2="118" y2="25" stroke="rgba(255,255,255,.15)" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="162" y1="25" x2="218" y2="25" stroke="rgba(255,255,255,.15)" stroke-width="1.5" stroke-dasharray="4,3"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S10  CASE A — ELDERLY — amber-dark
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s10"
+  data-title="The Elderly"
+  data-note="Tell the story: elderly person at bus stop, no QR code, turned away.">
+
+  <div class="glow-orb" style="width:450px;height:450px;
+       background:radial-gradient(rgba(255,159,10,.15),transparent);
+       top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+  <!-- Large SVG scene illustration -->
+  <div class="a-s d0" style="position:relative;z-index:1;margin-bottom:1.2rem;">
+    <svg viewBox="0 0 380 180" width="400" height="190"
+         xmlns="http://www.w3.org/2000/svg">
+
+      <!-- City backdrop -->
+      <rect x="0"   y="110" width="50"  height="70" fill="#1f1008" rx="3"/>
+      <rect x="8"   y="90"  width="32"  height="90" fill="#261409" rx="3"/>
+      <rect x="55"  y="100" width="45"  height="80" fill="#1f1008" rx="3"/>
+      <rect x="62"  y="80"  width="28"  height="100" fill="#261409" rx="3"/>
+      <rect x="280" y="105" width="42"  height="75" fill="#1f1008" rx="3"/>
+      <rect x="288" y="88"  width="26"  height="92" fill="#261409" rx="3"/>
+      <rect x="325" y="98"  width="55"  height="82" fill="#1f1008" rx="3"/>
+      <!-- Windows lit warm -->
+      <rect x="12"  y="98"  width="6" height="6" fill="#FF9F0A" opacity=".5" rx="1"/>
+      <rect x="22"  y="98"  width="6" height="6" fill="#FF9F0A" opacity=".3" rx="1"/>
+      <rect x="65"  y="88"  width="6" height="6" fill="#FF9F0A" opacity=".4" rx="1"/>
+      <rect x="290" y="96"  width="6" height="6" fill="#FF9F0A" opacity=".5" rx="1"/>
+      <rect x="330" y="105" width="6" height="6" fill="#FF9F0A" opacity=".3" rx="1"/>
+      <!-- Ground -->
+      <line x1="0" y1="168" x2="380" y2="168" stroke="#2a1a08" stroke-width="2"/>
+
+      <!-- Bus stop sign -->
+      <rect x="148" y="60" width="36" height="22" fill="#FF9F0A" opacity=".8" rx="4"/>
+      <text x="166" y="75" text-anchor="middle" font-size="8" fill="#000"
+            font-family="sans-serif" font-weight="700">BUS STOP</text>
+      <line x1="166" y1="82" x2="166" y2="170" stroke="#555" stroke-width="3"/>
+
+      <!-- QR code panel on pole -->
+      <rect x="170" y="100" width="40" height="40" fill="#111" rx="4"
+            stroke="#333" stroke-width="1"/>
+      <rect x="174" y="104" width="8"  height="8"  fill="#333" rx="1"/>
+      <rect x="185" y="104" width="8"  height="8"  fill="#333" rx="1"/>
+      <rect x="196" y="104" width="8"  height="8"  fill="#333" rx="1"/>
+      <rect x="174" y="115" width="8"  height="8"  fill="#333" rx="1"/>
+      <rect x="174" y="126" width="8"  height="8"  fill="#333" rx="1"/>
+      <rect x="185" y="126" width="8"  height="8"  fill="#333" rx="1"/>
+      <rect x="196" y="115" width="8"  height="8"  fill="#333" rx="1"/>
+      <rect x="196" y="126" width="8"  height="8"  fill="#333" rx="1"/>
+      <!-- Red X on QR -->
+      <line x1="170" y1="100" x2="210" y2="140" stroke="#FF453A" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="210" y1="100" x2="170" y2="140" stroke="#FF453A" stroke-width="3.5" stroke-linecap="round"/>
+
+      <!-- Elderly person -->
+      <circle cx="118" cy="100" r="13" fill="#8B6914"/>
+      <!-- white hair -->
+      <path d="M105 93 Q118 84 131 93" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".6"/>
+      <!-- body -->
+      <rect x="103" y="115" width="28" height="35" fill="#5a3a10" rx="7"/>
+      <!-- walking stick -->
+      <line x1="130" y1="130" x2="140" y2="165" stroke="#888" stroke-width="3" stroke-linecap="round"/>
+      <!-- legs -->
+      <line x1="111" y1="148" x2="108" y2="165" stroke="#5a3a10" stroke-width="5" stroke-linecap="round"/>
+      <line x1="121" y1="148" x2="124" y2="165" stroke="#5a3a10" stroke-width="5" stroke-linecap="round"/>
+      <!-- Broken wifi above head -->
+      <path d="M109 88 Q118 80 127 88" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M104 83 Q118 73 132 83" fill="none" stroke="#444" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="118" cy="92" r="2.5" fill="#555"/>
+      <line x1="102" y1="72" x2="134" y2="92" stroke="#FF453A" stroke-width="2.5" stroke-linecap="round"/>
+
+      <!-- Sad expression hint -->
+      <path d="M113 108 Q118 104 123 108" fill="none" stroke="#FF9F0A" stroke-width="1.5" stroke-linecap="round"/>
+
+      <!-- Speech bubble: confused -->
+      <ellipse cx="88" cy="80" rx="22" ry="13" fill="#1a0d00" stroke="#3a2200" stroke-width="1.5"/>
+      <text x="88" y="85" text-anchor="middle" font-size="12" fill="#FF9F0A" font-family="sans-serif">?</text>
+      <polygon points="95,90 100,100 89,90" fill="#1a0d00"/>
+    </svg>
+  </div>
+
+  <div class="a d1 t-h1 mt1" style="position:relative;z-index:1;">
+    Left behind in the Smart City.
+  </div>
+  <div class="a d2 t-body mt2" style="position:relative;z-index:1;color:rgba(255,255,255,.55);">
+    <strong style="color:#fff;">280 million elderly</strong> in China alone struggle with
+    QR codes, mobile payments and health apps.
+    The smart city was never designed for them.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S11  CASE B — EDUCATION — deep indigo
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s11"
+  data-title="Education Gap"
+  data-note="463 million. Say it slowly. One number, world-changing weight.">
+
+  <div class="glow-orb" style="width:500px;height:500px;
+       background:radial-gradient(rgba(94,92,230,.2),transparent);
+       top:40%;left:50%;transform:translate(-50%,-50%);"></div>
+
+  <div class="a-up d0 t-label" style="color:var(--purple);position:relative;z-index:1;">
+    Case Study B
+  </div>
+  <div class="a d1 t-h1 mt1" style="position:relative;z-index:1;">The Education Gap</div>
+
+  <!-- Classroom SVG scene -->
+  <div class="a-s d2" style="position:relative;z-index:1;margin-top:1.2rem;">
+    <svg viewBox="0 0 420 160" width="440" height="168"
+         xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Blackboard -->
+      <rect x="80" y="10" width="180" height="100" fill="#0d1f0d" rx="6"
+            stroke="#1a3a1a" stroke-width="2"/>
+      <rect x="85" y="15" width="170" height="90"  fill="#0a1a0a" rx="4"/>
+      <!-- Blackboard content -->
+      <text x="170" y="42" text-anchor="middle" font-size="10"
+            fill="#32d74b" font-family="monospace" font-weight="600">Digital Literacy</text>
+      <line x1="90"  y1="52" x2="250" y2="52" stroke="#1a3a1a" stroke-width="1"/>
+      <text x="170" y="67" text-anchor="middle" font-size="7.5"
+            fill="rgba(50,209,88,.4)" font-family="monospace">Lesson 3: Online Safety</text>
+      <text x="170" y="80" text-anchor="middle" font-size="7.5"
+            fill="rgba(50,209,88,.3)" font-family="monospace">Lesson 4: Finding Info</text>
+      <!-- Board chalk marks -->
+      <line x1="90"  y1="90" x2="130" y2="90" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+      <line x1="140" y1="90" x2="200" y2="90" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+
+      <!-- Student A — with laptop (left) -->
+      <!-- desk -->
+      <rect x="10"  y="115" width="80" height="6"  fill="#1a1a2a" rx="2"/>
+      <rect x="12"  y="120" width="6"  height="35" fill="#15152a" rx="1"/>
+      <rect x="76"  y="120" width="6"  height="35" fill="#15152a" rx="1"/>
+      <!-- person -->
+      <circle cx="50" cy="88" r="12" fill="#7a5a3a"/>
+      <rect   cx="50" cy="95" x="35" y="100" width="28" height="25" fill="#3a5a8a" rx="6"/>
+      <!-- laptop on desk -->
+      <rect x="20"  y="100" width="50" height="16" fill="#111" rx="3" stroke="#2a2a4a" stroke-width="1"/>
+      <rect x="22"  y="101" width="46" height="13" fill="#0a1a3a" rx="2"/>
+      <rect x="23"  y="102" width="44" height="11" fill="#0A84FF" opacity=".15" rx="1"/>
+      <!-- screen text -->
+      <text x="45" y="110" text-anchor="middle" font-size="4.5"
+            fill="#5AC8FA" font-family="monospace">ONLINE CLASS</text>
+      <!-- wifi -->
+      <path d="M44 76 Q50 70 56 76" fill="none" stroke="#5AC8FA" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+      <path d="M40 72 Q50 64 60 72" fill="none" stroke="#5AC8FA" stroke-width="1.8" stroke-linecap="round" opacity=".5"/>
+      <text x="50" y="145" text-anchor="middle" font-size="7" fill="#5AC8FA"
+            font-family="sans-serif">Learning ✓</text>
+
+      <!-- Student B — no device (right) -->
+      <rect x="320" y="115" width="80" height="6"  fill="#1a1a2a" rx="2"/>
+      <rect x="322" y="120" width="6"  height="35" fill="#15152a" rx="1"/>
+      <rect x="386" y="120" width="6"  height="35" fill="#15152a" rx="1"/>
+      <!-- person -->
+      <circle cx="360" cy="88" r="12" fill="#7a5a3a"/>
+      <rect x="345" y="100" width="28" height="25" fill="#555" rx="6"/>
+      <!-- empty desk with X -->
+      <rect x="325" y="100" width="70" height="16" fill="#0d0d1a" rx="3"
+            stroke="#2a2a3a" stroke-width="1" stroke-dasharray="4,3"/>
+      <text x="360" y="111" text-anchor="middle" font-size="5.5"
+            fill="rgba(255,69,58,.5)" font-family="monospace">NO DEVICE</text>
+      <!-- sad / no signal -->
+      <path d="M352 76 Q360 70 368 76" fill="none" stroke="#444" stroke-width="2" stroke-linecap="round" opacity=".4"/>
+      <line x1="348" y1="65" x2="372" y2="78" stroke="#FF453A" stroke-width="2" stroke-linecap="round"/>
+      <!-- sleepy/sad expression -->
+      <path d="M356 93 Q360 90 364 93" fill="none" stroke="#888" stroke-width="1.2" stroke-linecap="round"/>
+      <text x="360" y="145" text-anchor="middle" font-size="7" fill="#555"
+            font-family="sans-serif">Missing out ✗</text>
+
+      <!-- Big stat in middle -->
+      <text x="215" y="148" text-anchor="middle" font-size="9"
+            fill="rgba(191,90,242,.6)" font-family="sans-serif" font-weight="700">
+        463M children locked out
+      </text>
+    </svg>
+  </div>
+
+  <div class="a d3 t-body mt1" style="position:relative;z-index:1;color:rgba(255,255,255,.55);">
+    A missing device doesn't mean a missing class.
+    <strong style="color:#fff;">It means a missing future.</strong>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S12  VICIOUS CYCLE — dark red
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s12"
+  data-title="The Vicious Cycle"
+  data-note="Walk through each node. Emphasise: this cycle repeats indefinitely.">
+
+  <div class="glow-orb" style="width:400px;height:400px;
+       background:radial-gradient(rgba(255,69,58,.18),transparent);
+       top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+  <div class="a-up d0 t-label" style="color:var(--red);position:relative;z-index:1;">
+    Impact
+  </div>
+  <div class="a d1 t-h1 mt1" style="position:relative;z-index:1;">The Vicious Cycle</div>
+
+  <div class="cycle a d2" style="position:relative;z-index:1;">
+    <div class="cn">Digital<br>Poverty</div>
+    <div class="ca">→</div>
+    <div class="cn hl">Opportunity<br>Loss</div>
+    <div class="ca">→</div>
+    <div class="cn">Economic<br>Poverty</div>
+    <div class="ca">→</div>
+    <div class="cn" style="border-style:dashed;color:rgba(255,255,255,.3);
+         font-size:.9rem;">↩ Repeats</div>
+  </div>
+
+  <div class="a d3 t-body mt3" style="position:relative;z-index:1;color:rgba(255,255,255,.5);">
+    Without intervention, the digital divide inevitably
+    <strong style="color:#fff;">becomes the wealth divide.</strong>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S13  BRIDGE — optimistic green
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s13"
+  data-title="Solutions"
+  data-note="Big breath. Shift tone to optimism. This is the turn.">
+
+  <div class="bg-dots" style="opacity:.2;"></div>
+  <div class="glow-orb" style="width:600px;height:600px;
+       background:radial-gradient(rgba(48,209,88,.12),transparent);
+       top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+
+  <div class="a-s d0 t-h1" style="font-size:clamp(2rem,5.5vw,5rem);
+       position:relative;z-index:1;">
+    How do we
+    <span class="grad-neon">bridge the gap?</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S14  SOLUTION 1 — GOVERNMENT — deep official blue (SPLIT)
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide split" id="s14"
+  data-title="Government"
+  data-note="Mention South Korea, Estonia and Finland — three proof points.">
+
+  <!-- Left: label + number + SVG -->
+  <div class="half" style="background:linear-gradient(145deg,#001428,#00234A);
+       border-right:1px solid rgba(255,255,255,.06);">
+    <div class="a-l d0 t-label" style="color:var(--teal);">Solution 01</div>
+    <div class="a-l d1 t-h1 t-left mt1"
+         style="font-size:clamp(1.8rem,3.8vw,3.8rem);">
+      Government<br>&amp; Infrastructure
+    </div>
+    <div class="a-l d3" style="margin-top:2rem;">
+      <!-- Government building SVG -->
+      <svg viewBox="0 0 110 80" width="100" height="73"
+           xmlns="http://www.w3.org/2000/svg">
+        <rect x="5"  y="35" width="100" height="43" fill="#0a1a2a" rx="3"/>
+        <rect x="18" y="44" width="12" height="20" fill="#0A84FF" opacity=".25" rx="2"/>
+        <rect x="36" y="44" width="12" height="20" fill="#0A84FF" opacity=".25" rx="2"/>
+        <rect x="60" y="44" width="12" height="20" fill="#0A84FF" opacity=".25" rx="2"/>
+        <rect x="78" y="44" width="12" height="20" fill="#0A84FF" opacity=".25" rx="2"/>
+        <polygon points="55,8 100,35 10,35" fill="#0d2040"/>
+        <rect x="46" y="16" width="18" height="20" fill="#0A84FF" opacity=".15" rx="2"/>
+        <line x1="55" y1="8"  x2="55" y2="3"  stroke="#555" stroke-width="2"/>
+        <rect x="55" y="1"   width="18" height="9" fill="#0A84FF" opacity=".5" rx="1"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Right: content -->
+  <div class="half" style="background:linear-gradient(145deg,#001E3C,#002D5C);">
+    <div class="a-r d2 t-h3 t-left" style="color:#fff;">
+      Treat broadband as a public utility.
+    </div>
+    <div class="a-r d3 t-body t-left mt2" style="font-size:1.2rem;color:rgba(255,255,255,.55);">
+      Subsidize rural networks. Create public-private partnerships.
+      Provide affordable data plans for low-income families.
+    </div>
+    <div class="a-r d4" style="margin-top:1.5rem;display:flex;gap:.7rem;flex-wrap:wrap;">
+      <div class="badge badge-blue">🇰🇷 South Korea</div>
+      <div class="badge badge-blue">🇪🇪 Estonia</div>
+      <div class="badge badge-blue">🇫🇮 Finland</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S15  SOLUTION 2 — TECH INDUSTRY — electric purple (SPLIT)
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide split" id="s15"
+  data-title="Tech Industry"
+  data-note="Show senior mode if you have a phone — live demo is powerful.">
+
+  <!-- Left: content -->
+  <div class="half" style="background:linear-gradient(145deg,#0D0028,#1A0045);">
+    <div class="a-l d2 t-h3 t-left" style="color:#fff;">
+      Design for inclusion, not just innovation.
+    </div>
+    <div class="a-l d3 t-body t-left mt2" style="font-size:1.2rem;color:rgba(255,255,255,.55);">
+      Accessibility-first interfaces. Senior modes with larger text
+      and voice guidance. Step-by-step onboarding for first-time users.
+    </div>
+    <div class="a-l d4" style="margin-top:1.5rem;display:flex;gap:.7rem;flex-wrap:wrap;">
+      <div class="badge badge-purple">♿ Accessibility</div>
+      <div class="badge badge-purple">🔊 Voice Guide</div>
+      <div class="badge badge-purple">A+ Large Text</div>
+    </div>
+  </div>
+
+  <!-- Right: label + SVG phone -->
+  <div class="half" style="background:linear-gradient(145deg,#1A003A,#2D0060);
+       border-left:1px solid rgba(255,255,255,.06);">
+    <div class="a-r d0 t-label" style="color:var(--purple);">Solution 02</div>
+    <div class="a-r d1 t-h1 t-left mt1"
+         style="font-size:clamp(1.8rem,3.8vw,3.8rem);">
+      Tech<br>Industry
+    </div>
+    <!-- Phone with accessibility SVG -->
+    <div class="a-r d3" style="margin-top:2rem;">
+      <svg viewBox="0 0 75 110" width="62" height="92"
+           xmlns="http://www.w3.org/2000/svg">
+        <rect x="5" y="5" width="65" height="100" fill="#1a0040" rx="14"
+              stroke="rgba(191,90,242,.4)" stroke-width="1.5"/>
+        <rect x="12" y="16" width="51" height="72" fill="#0a0020" rx="7"/>
+        <!-- Accessibility figure -->
+        <circle cx="37" cy="32" r="6" fill="#BF5AF2" opacity=".85"/>
+        <line x1="37" y1="38" x2="37" y2="56" stroke="#BF5AF2" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>
+        <line x1="26" y1="45" x2="48" y2="45" stroke="#BF5AF2" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>
+        <line x1="37" y1="56" x2="29" y2="70" stroke="#BF5AF2" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>
+        <line x1="37" y1="56" x2="45" y2="70" stroke="#BF5AF2" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>
+        <!-- Font size bar -->
+        <text x="37" y="85" text-anchor="middle" font-size="8"
+              fill="rgba(191,90,242,.5)" font-family="sans-serif">A  A+  A++</text>
+        <!-- Home indicator -->
+        <rect x="28" y="103" width="19" height="2.5" fill="#333" rx="1.5"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S16  SOLUTION 3 — COMMUNITY — forest green (SPLIT)
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide split" id="s16"
+  data-title="Community & Education"
+  data-note="End with dignity — it is the emotional climax of the whole talk.">
+
+  <!-- Left: label + SVG teacher -->
+  <div class="half" style="background:linear-gradient(145deg,#001A0F,#002D1A);
+       border-right:1px solid rgba(255,255,255,.06);">
+    <div class="a-l d0 t-label" style="color:var(--green);">Solution 03</div>
+    <div class="a-l d1 t-h1 t-left mt1"
+         style="font-size:clamp(1.8rem,3.8vw,3.8rem);">
+      Community<br>&amp; Education
+    </div>
+    <!-- Teacher + student SVG -->
+    <div class="a-l d3" style="margin-top:2rem;">
+      <svg viewBox="0 0 130 90" width="118" height="82"
+           xmlns="http://www.w3.org/2000/svg">
+        <!-- Whiteboard -->
+        <rect x="0"  y="5"  width="72" height="52" fill="#0a1a0a" rx="4"
+              stroke="#1a3a1a" stroke-width="1.5"/>
+        <text x="8"  y="22" font-size="7" fill="#30D158" font-family="monospace">Digital</text>
+        <text x="8"  y="33" font-size="7" fill="#30D158" font-family="monospace">Literacy 101</text>
+        <line x1="8" y1="40" x2="64" y2="40" stroke="#1a3a1a" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Teacher -->
+        <circle cx="100" cy="25" r="11" fill="#7a5a3a"/>
+        <rect   x="88"  y="38" width="24" height="28" fill="#1a5a3a" rx="7"/>
+        <line   x1="92" y1="66" x2="89" y2="80" stroke="#1a5a3a" stroke-width="4.5" stroke-linecap="round"/>
+        <line   x1="108" y1="66" x2="111" y2="80" stroke="#1a5a3a" stroke-width="4.5" stroke-linecap="round"/>
+        <!-- Pointing stick -->
+        <line x1="88" y1="48" x2="74" y2="38" stroke="#30D158" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+        <!-- Smile -->
+        <path d="M95 28 Q100 33 105 28" fill="none" stroke="#c8a87a" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Right: content -->
+  <div class="half" style="background:linear-gradient(145deg,#002618,#004025);">
+    <div class="a-r d2 t-h3 t-left" style="color:#fff;">
+      Empowerment through learning.
+    </div>
+    <div class="a-r d3 t-body t-left mt2" style="font-size:1.2rem;color:rgba(255,255,255,.55);">
+      Embed digital literacy in school curricula globally.
+      Community help-desks in libraries and senior centres.
+      One-on-one guidance for those the system forgot.
+    </div>
+    <div class="a-r d5 t-h3 t-left mt3"
+         style="color:var(--green);font-size:clamp(1.1rem,2vw,1.7rem);">
+      Digital inclusion is not charity.<br>
+      <span style="color:#fff;">It is dignity.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S17  VISION — spectacular prismatic
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide" id="s17"
+  data-title="Vision"
+  data-note="Say it slowly. One phrase at a time. Then silence.">
+
+  <div class="particles">
+    <div class="ptc" style="left:8%;  width:4px;height:4px;background:rgba(10,132,255,.9); animation-duration:14s;animation-delay:0s;"></div>
+    <div class="ptc" style="left:22%; width:2px;height:2px;background:rgba(255,255,255,.8); animation-duration:20s;animation-delay:1.5s;"></div>
+    <div class="ptc" style="left:38%; width:3px;height:3px;background:rgba(191,90,242,.9); animation-duration:12s;animation-delay:.5s;"></div>
+    <div class="ptc" style="left:55%; width:4px;height:4px;background:rgba(255,55,95,.8);  animation-duration:17s;animation-delay:2s;"></div>
+    <div class="ptc" style="left:70%; width:2px;height:2px;background:rgba(255,159,10,.9); animation-duration:13s;animation-delay:1s;"></div>
+    <div class="ptc" style="left:84%; width:3px;height:3px;background:rgba(48,209,88,.8);  animation-duration:18s;animation-delay:.8s;"></div>
+    <div class="ptc" style="left:45%; width:2px;height:2px;background:rgba(90,200,250,.7); animation-duration:15s;animation-delay:3s;"></div>
+    <div class="ptc" style="left:92%; width:3px;height:3px;background:rgba(255,255,255,.6);animation-duration:11s;animation-delay:2.2s;"></div>
+  </div>
+
+  <div class="a-s d0 t-h1" style="font-size:clamp(2.2rem,5.5vw,5.2rem);
+       line-height:1.25;position:relative;z-index:1;
+       background:linear-gradient(135deg,#FFFFFF 0%,#A8EDFF 25%,#C084FC 55%,#FF9F0A 80%,#FF375F 100%);
+       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+    Technology should empower.<br>Not divide.
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     S18  THANK YOU — pure clean white (LIGHT ENDING)
+     NOTE: isolation:isolate on #deck prevents any bleed
+     ═══════════════════════════════════════════════════════ -->
+<section class="slide on-light" id="s18"
+  data-title="Thank You"
+  data-note="Smile. Make eye contact. Wait for the applause.">
+
+  <!-- Soft colour blobs on white -->
+  <div style="position:absolute;width:500px;height:500px;
+       background:radial-gradient(rgba(10,132,255,.08),transparent);
+       border-radius:50%;top:-150px;right:-150px;pointer-events:none;z-index:0;"></div>
+  <div style="position:absolute;width:400px;height:400px;
+       background:radial-gradient(rgba(191,90,242,.07),transparent);
+       border-radius:50%;bottom:-120px;left:-120px;pointer-events:none;z-index:0;"></div>
+
+  <!-- No particles, no stray SVG lines — clean white finish -->
+  <div class="a-s d0 t-h1" style="font-size:clamp(3rem,8vw,7.5rem);
+       letter-spacing:-.05em;position:relative;z-index:1;
+       background:linear-gradient(135deg,var(--ink),var(--ink2));
+       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+       background-clip:text;">
+    Thank You.
+  </div>
+
+  <div class="divider div-blue a d1" style="position:relative;z-index:1;"></div>
+
+  <div class="a d2 t-body mt1" style="color:var(--ink4);position:relative;z-index:1;">
+    Questions &amp; Discussion
+  </div>
+
+  <!-- Team name caps on white -->
+  <div class="a d4" style="display:flex;gap:.8rem;flex-wrap:wrap;
+       justify-content:center;margin-top:2.5rem;position:relative;z-index:1;">
+    <div class="glass-light" style="padding:.6rem 1.4rem;border-radius:50px;
+         font-size:clamp(.75rem,1.2vw,1rem);font-weight:600;color:var(--blue);">
+      Digital Divide
+    </div>
+    <div class="glass-light" style="padding:.6rem 1.4rem;border-radius:50px;
+         font-size:clamp(.75rem,1.2vw,1rem);font-weight:600;color:var(--purple);">
+      Inclusion
+    </div>
+    <div class="glass-light" style="padding:.6rem 1.4rem;border-radius:50px;
+         font-size:clamp(.75rem,1.2vw,1rem);font-weight:600;color:var(--orange);">
+      Equity
+    </div>
+    <div class="glass-light" style="padding:.6rem 1.4rem;border-radius:50px;
+         font-size:clamp(.75rem,1.2vw,1rem);font-weight:600;color:var(--green);">
+      Let's bridge the gap. 🌉
+    </div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<!-- CHROME -->
+<div id="pbar" style="width:0%"></div>
+<nav id="ndots"></nav>
+<div id="ctr">01 / 18</div>
+<div id="hint">N = notes &nbsp;·&nbsp; ↑↓ keys</div>
+<div id="snote" class="off"></div>
+
+<script>
+(function(){
+  'use strict';
+  const slides  = Array.from(document.querySelectorAll('.slide'));
+  const total   = slides.length;
+  const pbar    = document.getElementById('pbar');
+  const ctr     = document.getElementById('ctr');
+  const dotsEl  = document.getElementById('ndots');
+  const snote   = document.getElementById('snote');
+  let cur       = 0;
+  let locked    = false;
+  let notesVis  = false;
+
+  /* ── Build dots ── */
+  slides.forEach((_,i)=>{
+    const d = document.createElement('button');
+    d.className = 'ndot';
+    d.addEventListener('click', ()=> go(i));
+    dotsEl.appendChild(d);
+  });
+  const dots = dotsEl.querySelectorAll('.ndot');
+
+  /* ── Counter roll (S03) ── */
+  function rollCounter(){
+    const el = document.getElementById('bigNum');
+    if(!el) return;
+    let v = 0, target = 2.6, step = target/55;
+    const t = setInterval(()=>{
+      v = Math.min(v+step, target);
+      el.textContent = v.toFixed(1);
+      if(v >= target) clearInterval(t);
+    }, 20);
+  }
+
+  /* ── Core navigate ── */
+  function go(n, dir){
+    if(locked || n < 0 || n >= total) return;
+    locked = true;
+
+    /* FULLY hide previous — both opacity:0 AND visibility:hidden */
+    const prev = slides[cur];
+    prev.classList.remove('active','enter-r','enter-l');
+    /* force prev to instantly hide (no lingering visibility) */
+    prev.style.visibility = 'hidden';
+
+    const next = slides[n];
+    const direction = dir !== undefined ? dir : (n > cur ? 'r' : 'l');
+
+    /* clean next state */
+    next.classList.remove('active','enter-r','enter-l');
+    next.style.visibility = '';
+    void next.offsetWidth;   /* reflow — restart all child animations */
+    next.classList.add('active', direction==='r' ? 'enter-r' : 'enter-l');
+
+    cur = n;
+    chrome();
+
+    /* per-slide hooks */
+    if(n === 2) setTimeout(rollCounter, 280);
+
+    setTimeout(()=>{
+      locked = false;
+      /* clean inline style after transition */
+      prev.style.visibility = '';
+    }, 660);
+  }
+
+  /* ── Chrome update ── */
+  function chrome(){
+    dots.forEach((d,i)=> d.classList.toggle('on', i===cur));
+    pbar.style.width = (total>1 ? (cur/(total-1))*100 : 100) + '%';
+    ctr.textContent = String(cur+1).padStart(2,'0') + ' / ' + String(total).padStart(2,'0');
+    if(notesVis) snote.textContent = slides[cur].dataset.note || '';
+  }
+
+  /* ── Keyboard ── */
+  document.addEventListener('keydown', e=>{
+    if(['ArrowDown','ArrowRight',' '].includes(e.key)){ e.preventDefault(); go(cur+1,'r'); }
+    else if(['ArrowUp','ArrowLeft'].includes(e.key))  { e.preventDefault(); go(cur-1,'l'); }
+    else if(e.key==='n'||e.key==='N'){
+      notesVis = !notesVis;
+      snote.classList.toggle('off', !notesVis);
+      if(notesVis) snote.textContent = slides[cur].dataset.note || '';
+    }
+  });
+
+  /* ── Touch swipe ── */
+  let tx=0,ty=0;
+  document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>40)
+      dy<0?go(cur+1,'r'):go(cur-1,'l');
+  },{passive:true});
+
+  /* ── Mouse wheel ── */
+  let wt=0;
+  document.addEventListener('wheel',e=>{
+    e.preventDefault();
+    const now=Date.now(); if(now-wt<750) return; wt=now;
+    e.deltaY>0?go(cur+1,'r'):go(cur-1,'l');
+  },{passive:false});
+
+  /* ── Init ── */
+  go(0);
+})();
+</script>
+</body>
+</html>
